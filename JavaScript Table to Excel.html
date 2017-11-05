@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>导出Excel测试</title>
+</head>
+<body>
+  <h1>嘿嘿，这是一个Table通过JavaScript技术导出到Excel的方法。</h1>
+  <button id="btnExport" onclick="fnExcelReport('tbl','HTML表格内容');">导出Excel</button>
+  <table id="tbl">
+    <tr>
+      <th>th text </th>
+      <th>th text </th>
+      <th>th text </th>
+    </tr>
+    <tr>
+      <td>td text </td>
+      <td>td text </td>
+      <td>td text </td>
+    </tr>
+    <tr>
+      <td>td text </td>
+      <td>td text </td>
+      <td>td text </td>
+    </tr>
+  </table>
+  <iframe id="txtArea1" style="display:none"></iframe>
+</body>
+<script>
+  function fnExcelReport(id,name) {
+    var tab_text = "<table border='2px'><tr bgcolor='#87AFC6'>";
+    var tab = document.getElementById(id); // id of table
+
+    for (var j = 0; j < tab.rows.length; j++) {
+      j == tab.rows.length-1 ? tab_text += tab.rows[j].innerHTML + "</tr>" : tab_text += tab.rows[j].innerHTML + "</tr><tr>";
+    }
+
+    tab_text = tab_text + "</table>";
+    tab_text = tab_text.replace(/<A[^>]*>|<\/A>/g, ""); //remove if u want links in your table
+    tab_text = tab_text.replace(/<img[^>]*>/gi, ""); // remove if u want images in your table
+    tab_text = tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE");
+    var sa ;
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+    {
+      txtArea1.document.open("txt/html", "replace");
+      txtArea1.document.write(tab_text);
+      txtArea1.document.close();
+      txtArea1.focus();
+      sa = txtArea1.document.execCommand("SaveAs", true, name + ".xls");
+    } else //other browser not tested on IE 11
+      sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
+    return (sa);
+  }
+</script>
+</html>
